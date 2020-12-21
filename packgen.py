@@ -91,12 +91,29 @@ class MyForm(QMainWindow):
             struct_name = struct[0]
             msg += "struct "+ struct_name +"_t" +"packet;\n"
         
+        ## encode
+        
+        for struct in self.structs:
+            struct_name = struct[0]
+            pack_name = struct[0]+"_t"
+            msg += "void " + struct_name + "_encode(uint8_t* data, uint8_t* pack, uint16_t len){\n"
+            msg += "\t memset(data, 0 , PACK_LEN);\n"
+            
+            msg += "\t memcpy(data,pack,sizeof(" + pack_name +"));\n"
+            msg += "\t return sizeof( "+pack_name  +" );\n"
+            msg += "\n\n\n"
+            msg += "}\n" 
+        
+        msg += "void packet_send(uint8_t* data, uint16_t len){\n"
+        msg += "\t uart_send(uint8_t* data, uint16_t len );\n" 
+        msg += "}\n"
+        
+        
         
         
         self.cfile_txt.setText(msg)
     
 
-    
     
     
     def generate_hfile(self):
@@ -105,6 +122,9 @@ class MyForm(QMainWindow):
         msg += "#ifndef __PACKET_H_ \n"
         msg += "#define __PACKET_H_ \n"
         msg += "#pragma pack(push,1)\n"
+        
+        msg += "#define PACK_LEN 200"   #        #define PACK_LEN 200
+
         #use loop to generate different packets
         #data type int8_t uint8_t int16_t uint16_t ... 
         for struct in self.structs:
@@ -121,6 +141,7 @@ class MyForm(QMainWindow):
         msg += "#pragma pack(pop)\n"
         msg += "\n"
         msg += "#endif\n"
+        
         self.hfile_txt.setText(msg)
 
 

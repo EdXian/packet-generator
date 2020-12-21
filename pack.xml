@@ -26,6 +26,15 @@
         
     </struct>   
     
-    
+    <struct name = "orientation">
+        <var type="uint8_t" name="header"> </var>
+        <var type="uint8_t" name="len"> </var>
+        <var type="uint8_t" name="devid"> </var>
+        <var type="uint8_t" name="msgid"> </var>        
+        <var type="float" name="r"> </var>
+        <var type="float" name="p"> </var>
+        <var type="float" name="y"> </var>
+        <var type="uint32_t" name="checksum"> </var>
+    </struct>     
     
 </structs>
