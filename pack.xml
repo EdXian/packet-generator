@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<structs>
+
+    <struct name = "packet1">
+        <var type="uint8_t" name="header"> </var>
+        <var type="uint8_t" name="len"> </var>
+        <var type="uint8_t" name="devid"> </var>
+        <var type="uint8_t" name="msgid"> </var>        
+        <var type="float" name="pressure"> </var>
+        <var type="float" name="temperature"> </var>
+        <var type="float" name="speed"> </var>
+        <var type="uint32_t" name="checksum"> </var>
+    </struct>  
+     
+     
+    <struct name = "packet2">
+    
+        <var type="uint8_t" name="header"> </var>
+        <var type="uint8_t" name="len"> </var>
+        <var type="uint8_t" name="devid"> </var>
+        <var type="uint8_t" name="msgid"> </var>        
+        <var type="float" name="x"> </var>
+        <var type="float" name="y"> </var>
+        <var type="float" name="z"> </var>
+        <var type="uint32_t" name="checksum"> </var>
+        
+    </struct>   
+    
+    
+    
+</structs>
