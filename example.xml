@@ -1,20 +1,27 @@
 <?xml version="1.0"?>
-<structs>
+<file>
 
+    <macro name = "pack">
+        <var name = "PACK_LEN" val = "200" >  </var>
+        <var name = "PI" val = "3.14159">   </var>
+    </macro>
+    
+    <enum name = "mode">
+        <var name = "mode1" val = "0"> </var>
+        <var name = "mode2" val = "1"> </var>
+    </enum>
+    
     <struct name = "packet1">
         <var type="uint8_t" name="header"> </var>
         <var type="uint8_t" name="len"> </var>
         <var type="uint8_t" name="devid"> </var>
         <var type="uint8_t" name="msgid"> </var>        
-        <var type="float" name="pressure"> </var>
-        <var type="float" name="temperature"> </var>
-        <var type="float" name="speed"> </var>
+        <var type="uint8_t" name="data"> </var>
         <var type="uint32_t" name="checksum"> </var>
     </struct>  
      
      
     <struct name = "packet2">
-    
         <var type="uint8_t" name="header"> </var>
         <var type="uint8_t" name="len"> </var>
         <var type="uint8_t" name="devid"> </var>
@@ -23,7 +30,6 @@
         <var type="float" name="y"> </var>
         <var type="float" name="z"> </var>
         <var type="uint32_t" name="checksum"> </var>
-        
     </struct>   
     
     <struct name = "orientation">
@@ -37,4 +43,4 @@
         <var type="uint32_t" name="checksum"> </var>
     </struct>     
     
-</structs>
+</file>

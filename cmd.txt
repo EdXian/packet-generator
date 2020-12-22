@@ -1,0 +1,2 @@
+pyrcc5 icon.qrc -o icon.py
+pyinstaller.exe -F -w .\BOOTTEST.py
