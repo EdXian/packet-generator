@@ -255,12 +255,12 @@
         </property>
         <item>
          <property name="text">
-          <string>attribute</string>
+          <string>pragma</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>pragma</string>
+          <string>attribute</string>
          </property>
         </item>
         <item>

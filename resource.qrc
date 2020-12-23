@@ -15,5 +15,10 @@
 
     <file>source/sum8.c</file>
     <file>source/sum16.c</file>
+    <file>source/sum32.c</file>
+
+    <file>source/crc8.c</file>
+    <file>source/crc16.c</file>
+    <file>source/crc32.c</file>
   </qresource>
 </RCC>

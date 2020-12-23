@@ -139,29 +139,19 @@ class MyForm(QMainWindow):
             msg +=  '%s_t %s;\n' % (struct_name, struct_name)
         
         
-        f = QtCore.QFile('qrc:/source/crc8.c')
-        if f.open(QFile.ReadOnly):
-            #content = str(f.readAll(), 'utf-8')
-           
-            print(f.readAll())
-            f.close()
-        else:
-            print(f.errorString())
+        path = "source/%s.c" %(self.check_method)
+        f_check_func = open(path, "r").read()
+        
         
         #crc_function
-        msg += "uint32_t sum32(uint8_t*data, uint16_t len){\n"\
-                "\t uint32_t sum = 0x0000;\n"\
-                "\t for(uint16_t i=0;i<len;i++){\n"\
-                "\t\t sum+= data[i];\n"\
-                "\t } \n"\
-                "\t return sum;\n"\
-                "}\n"
-
+        msg += f_check_func
+        msg += "\n"
+        
         # check function
         msg += "uint16_t check_function(uint8_t *data, uint8_t* pack,uint16_t len){\n" \
                     "\t return %s(pack, len);\n"\
                 "}\n\n" % (self.check_method)
-        
+
         ## encode
         for struct in self.structs:
             struct_name = struct[0]
@@ -175,6 +165,8 @@ class MyForm(QMainWindow):
             msg += "}\n" 
 
 
+
+
         # send
         '''
         msg += "uint16_t uart_send(uint8_t *data,uint16_t len){\n" \
@@ -185,6 +177,8 @@ class MyForm(QMainWindow):
         
         ## IRQ_Handler
         
+        ## main function
+        
         
         
         
@@ -192,6 +186,16 @@ class MyForm(QMainWindow):
 
 
     def generate_hfile(self):
+        pack_attr_front = ""
+        pack_attr_end  = ""
+        self.update_config()
+       
+        if self.pack_attr  == "pragma":
+        
+            pack_attr_front = "#pragma pack(push,1)\n"
+            pack_attr_end = "#pragma pack(pop)\n"
+
+        
         
         msg = ""
         msg += "#include \"stdint.h\"  \n"
@@ -209,6 +213,7 @@ class MyForm(QMainWindow):
             for var in macro_vars :
                 msg += "#define" + "\t" +  var[0] + "\t" + var[1]  + "\n" 
         
+        msg += "\n"
         
         # print enumeration
         for enum in self.enums:
@@ -221,9 +226,10 @@ class MyForm(QMainWindow):
             
             msg+= "\n};\n"
         
+        msg += "\n"       
         
+        msg += pack_attr_front
         
-        msg += "#pragma pack(push,1)\n"
         # print structs  //struct pack  little/big endian
         for struct in self.structs:
             struct_name = struct[0]
@@ -236,15 +242,14 @@ class MyForm(QMainWindow):
             msg += "\n}"+ struct_name +"_t;\n"
                 
         msg += "\n"
-        msg += "#pragma pack(pop)\n"
+        
+        msg += pack_attr_end
+        
         msg += "\n"
         msg += "#endif\n"
         
         
         self.hfile_txt.setText(msg)
-
-
-
 
 
 
