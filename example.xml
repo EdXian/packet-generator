@@ -1,46 +1,84 @@
 <?xml version="1.0"?>
 <file>
-
+    
     <macro name = "pack">
         <var name = "PACK_LEN" val = "200" >  </var>
-        <var name = "PI" val = "3.14159">   </var>
     </macro>
     
-    <enum name = "mode">
-        <var name = "mode1" val = "0"> </var>
-        <var name = "mode2" val = "1"> </var>
+    <enum name = "device_type">
+         <var name = "mattress" val = "0"> </var>
+        <var name = "spine" val = "1"> </var>
+        <var name = "//reserved" val = "2"> </var>
     </enum>
     
-    <struct name = "packet1">
-        <var type="uint8_t" name="header"> </var>
-        <var type="uint8_t" name="len"> </var>
-        <var type="uint8_t" name="devid"> </var>
-        <var type="uint8_t" name="msgid"> </var>        
-        <var type="uint8_t" name="data"> </var>
-        <var type="uint32_t" name="checksum"> </var>
+    <enum name = "packet_type">
+        <var name = "position" val = "0"> </var>
+        <var name = "adjoint" val = "1"> </var>
+        <var name = "massage" val = "2"> </var>
+        <var name = "meditation" val = "3"> </var>
+        <var name = "hardness" val = "4"> </var>
+        <var name = "//reserved" val = "5"> </var>
+    </enum>
+    
+    <enum name = "sub_bed">
+        <var name = "all" val = "0"> </var>
+        <var name = "left" val = "1"> </var>
+        <var name = "right" val = "2"> </var>
+        <var name = "//reserved" val = "3"> </var>
+    </enum>
+    
+    
+    <enum name = "joint_mode">
+        <var name = "off" val = "0"> </var>
+        <var name = "joint" val = "1"> </var>
+        <var name = "disjoint" val = "2"> </var>
+        <var name = "free" val = "3"> </var>
+    </enum>
+    
+    <enum name = "meditation_mode">
+         <var name = "meditation_on" val = "0"> </var>
+        <var name = "meditation_off" val = "1"> </var>
+        <var name = "//reserved" val = "2"> </var>
+    </enum>
+    
+    
+    
+    
+    <!--uart-->
+    <union name = "joint" anonymous_type = "uint8_t">
+        <struct>
+            <var type="uint8_t" name="header_leg" bit ="1"> </var>
+            <var type="uint8_t" name="pillow" bit ="1"> </var>
+            <var type="uint8_t" name="neck" bit ="1"> </var>
+            <var type="uint8_t" name="back" bit ="1"> </var>
+            <var type="uint8_t" name="lumbar" bit ="1"> </var>
+            <var type="uint8_t" name="buttocks" bit ="1"> </var>
+            <var type="uint8_t" name="reserved" bit ="1"> </var>
+        </struct>
+    </union>
+    
+
+    <struct name = "header">
+        <var type="uint8_t" name="deveice_type"> </var>
+        <var type="uint8_t" name="packet_type"> </var>
+        <var type="uint8_t" name="sub_bed"> </var>
+        <var type="uint8_t" name="length"> </var>
+    </struct>  
+    
+    <struct name = "data">
+        <var type = "uint8_t" name = "position"></var>
+        <var type = "uint8_t" name = "hardness"></var>
+        <var type = "joint_u" name = "joint"></var>
+        <var type = "uint8_t" name = "massage"></var>
+        <var type = "uint8_t" name = "massage_level"></var>
+        <var type = "uint8_t" name = "meditation"></var>
+    </struct>
+    
+    <struct name = "packet">
+        <var type="header_t" name="header"> </var>
+        <var type="data_t" name = "data"></var>
+        <var type = "uint32_t" name = "checksum" ></var>
     </struct>  
      
-     
-    <struct name = "packet2">
-        <var type="uint8_t" name="header"> </var>
-        <var type="uint8_t" name="len"> </var>
-        <var type="uint8_t" name="devid"> </var>
-        <var type="uint8_t" name="msgid"> </var>        
-        <var type="float" name="x"> </var>
-        <var type="float" name="y"> </var>
-        <var type="float" name="z"> </var>
-        <var type="uint32_t" name="checksum"> </var>
-    </struct>   
-    
-    <struct name = "orientation">
-        <var type="uint8_t" name="header"> </var>
-        <var type="uint8_t" name="len"> </var>
-        <var type="uint8_t" name="devid"> </var>
-        <var type="uint8_t" name="msgid"> </var>        
-        <var type="float" name="r"> </var>
-        <var type="float" name="p"> </var>
-        <var type="float" name="y"> </var>
-        <var type="uint32_t" name="checksum"> </var>
-    </struct>     
-    
+    <!--app-->
 </file>

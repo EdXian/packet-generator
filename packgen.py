@@ -29,6 +29,7 @@ class MyForm(QMainWindow):
         self.structs = list()
         self.macros = list()
         self.enums = list()
+        self.unions = list()
         
         self.gen_Button.clicked.connect(self.generate_pack)
         self.load_xml_Button.clicked.connect(self.load_xml_file)
@@ -74,26 +75,39 @@ class MyForm(QMainWindow):
             self.structs.clear()
             count =0
             for i in root: 
-              struct = list()
-              macro = list()
-              enum = list()
-              
+
               if i.tag == "macro" :
-                  
+                  macro = list()
                   for j in i:
                       macro.append( (j.get('name'), j.get('val'))   )
                   self.macros.append((i.get('name'),macro))
-                  
-              elif  i.tag== "enum":     
+
+              elif  i.tag== "enum":
+                  enum = list()
                   for j in i:
                       enum.append(  (j.get('name'), j.get('val'))      )
                   self.enums.append(  (i.get('name'),enum)  )
+                  
+              elif  i.tag ==  "union":
+                  union = list()
+                  for j in i:
+                      
+                      if j.tag == "struct":
+                          struct_in_union = list()
+                          for k in j : 
+                              if k.get('type') !="":
+                                  struct_in_union.append(  (k.get('type'), k.get('name'), k.get('bit') ) )
+                      union.append( struct_in_union )
+                  
+                  self.unions.append( (i.get('name'),i.get('anonymous_type') ,union) )    
+                  #print(self.unions)
+                 
+                    
               elif i.tag == "struct" :
-
+                  struct = list()
                   for j in i:
                       struct.append( (j.get('type'), j.get('name')) )
-                      #print( (j.get('type'), j.get('name')) )
-                        
+                      #print( (j.get('type'), j.get('name')) )      
                   self.structs.append(  (i.get('name'),struct) )
               
               
@@ -230,6 +244,23 @@ class MyForm(QMainWindow):
         
         msg += pack_attr_front
         
+        # print unions 
+        for union in self.unions:
+            union_name = union[0]
+            union_type = union[1]
+            union_vars = union[2]
+            msg += "\n"
+            msg += "typedef union %s_union{\n\n" %(union_name)
+            
+            for structs in union_vars:
+                msg += " struct {\n"
+                for var in structs:
+                    msg += "\t%s %s : %s;\n" %(var[0],var[1],var[2])
+                msg += "\t};\n"
+            msg += "\t%s %s_value;\n"%(union_type, union_name)
+            msg +=  "\n}%s_u;\n"%( union_name)
+                    
+                    
         # print structs  //struct pack  little/big endian
         for struct in self.structs:
             struct_name = struct[0]
