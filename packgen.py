@@ -108,7 +108,7 @@ class MyForm(QMainWindow):
                   for j in i:
                       struct.append( (j.get('type'), j.get('name')) )
                       #print( (j.get('type'), j.get('name')) )      
-                  self.structs.append(  (i.get('name'),struct) )
+                  self.structs.append(  (i.get('name'),struct,i.get('encode'),i.get('config')) )
               
               
 
@@ -137,21 +137,24 @@ class MyForm(QMainWindow):
         
         if self.check_method == "crc8" or self.check_method == "sum8":
             crc_reserve_bytes = "1"
+            crc_return_type = "uint8_t"
         elif self.check_method == "crc16" or self.check_method == "sum16":
             crc_reserve_bytes = "2"
+            crc_return_type = "uint16_t"
         elif self.check_method == "crc32" or self.check_method == "sum32":
             crc_reserve_bytes = "4"
-        
+            crc_return_type = "uint32_t"
         
         msg = ""
-        msg += '%s \"%s.h\"\n' % ("#include", "packet")  #include "xxx.h"
-      
+        msg += ''
         
-        #msg += "#define PACK_SEND packet_send(uint8_t* data,uint16_t len);\n"
+        msg += '#include \"%s.h\"\n' % ("packet")  #include "xxx.h"
+        
+        ''' 
         for struct in self.structs:
             struct_name = struct[0]
             msg +=  '%s_t %s;\n' % (struct_name, struct_name)
-        
+        '''
         
         path = "source/%s.c" %(self.check_method)
         f_check_func = open(path, "r").read()
@@ -162,21 +165,41 @@ class MyForm(QMainWindow):
         msg += "\n"
         
         # check function
-        msg += "uint16_t check_function(uint8_t *data, uint8_t* pack,uint16_t len){\n" \
+        msg += "%s check_function(uint8_t* pack,uint16_t len){\n" \
                     "\t return %s(pack, len);\n"\
-                "}\n\n" % (self.check_method)
+                "}\n\n" % ((crc_return_type),self.check_method)
+        
+        ## input argument
+        for struct in self.structs:
+            struct_name = struct[0]
+            context = struct[1]
+            struct_config = struct[3]
+            arg = ""
+            statement = "\t\n"
+            if struct_config == "true":
+                for i in context:
+                    statement += "\t pack->%s = %s;\n" % (i[1],i[1])
+                    if i == context[-1]:  # if the last 1
+                        arg += "\n\t      %s %s" %(i[0],i[1])
+                    else:
+                        arg += "\n\t      %s %s," %(i[0],i[1])
+                msg +="void %s_config(%s_t* pack,%s){\n" %(struct_name,struct_name,arg)
+                msg += statement
+                msg += "\n}\n"
 
         ## encode
         for struct in self.structs:
             struct_name = struct[0]
-            msg +="uint16_t %s_encode(uint8_t* data, %s_t* pack, uint16_t len){\n" %( struct_name,     struct_name  )
-            msg += "\t memset(data, 0 , %s);\n" % ("PACK_LEN")
-            msg += "\t memcpy(data,pack,sizeof(%s_t));\n" %(struct_name)
-            msg += "\t pack->len = sizeof(packet1_t)-1-1;\n"
-            msg += "\t pack->checksum = check_function(data,pack, (sizeof(%s_t) -%s));\n" %(struct_name,crc_reserve_bytes)
-            msg += "\t return sizeof(%s_t);\n"%(struct_name)
-            msg += "\n\n\n"
-            msg += "}\n" 
+            struct_encode = struct[2]
+            if struct_encode == "true":
+                msg +="uint16_t %s_encode(uint8_t* data, %s_t* pack, uint16_t len){\n" %( struct_name,     struct_name  )
+                msg += "\t memset(data, 0 , %s);\n" % ("PACK_LEN")
+                msg += "\t memcpy(data,pack,sizeof(%s_t));\n" %(struct_name)
+                msg += "\t pack->header.len = sizeof(%s_t)-1-1;\n" %(struct_name)
+                msg += "\t pack->checksum = check_function(pack, (sizeof(%s_t) -%s));\n" %(struct_name,crc_reserve_bytes)
+                msg += "\t return sizeof(%s_t);\n"%(struct_name)
+                msg += "\n\n\n"
+                msg += "}\n" 
 
 
 
@@ -228,17 +251,17 @@ class MyForm(QMainWindow):
                 msg += "#define" + "\t" +  var[0] + "\t" + var[1]  + "\n" 
         
         msg += "\n"
-        
+        msg+= "/* "  +  macro_name + " enumeration" + " */ \n"
         # print enumeration
         for enum in self.enums:
             enum_name = enum[0]
             enum_vars = enum[1]
-            msg+= "/* "  +  macro_name + " enumeration" + " */ \n"
-            msg+= "enum "+ enum_name  +"{\n"
+            
+            msg+= "typedef enum "+ enum_name  +"{\n"
             for  var in enum_vars:
                 msg += "\t" + var[0] + " = " +var[1] + ",\n"
             
-            msg+= "\n};\n"
+            msg+= "\n}%s_e;\n" %(enum_name)
         
         msg += "\n"       
         
@@ -277,6 +300,11 @@ class MyForm(QMainWindow):
         msg += pack_attr_end
         
         msg += "\n"
+        
+        ## funciton declaration
+        #msg += "void"
+        
+        
         msg += "#endif\n"
         
         

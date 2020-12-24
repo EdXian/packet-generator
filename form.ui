@@ -126,17 +126,17 @@
         </property>
         <item>
          <property name="text">
+          <string>sum32</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>sum8</string>
          </property>
         </item>
         <item>
          <property name="text">
           <string>sum16</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>sum32</string>
          </property>
         </item>
         <item>

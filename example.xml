@@ -58,14 +58,14 @@
     </union>
     
 
-    <struct name = "header">
+    <struct name = "header" encode = "false" config = "true">
         <var type="uint8_t" name="deveice_type"> </var>
+        <var type="uint8_t" name="len"> </var>
         <var type="uint8_t" name="packet_type"> </var>
         <var type="uint8_t" name="sub_bed"> </var>
-        <var type="uint8_t" name="length"> </var>
     </struct>  
     
-    <struct name = "data">
+    <struct name = "data" encode = "false" config = "true">
         <var type = "uint8_t" name = "position"></var>
         <var type = "uint8_t" name = "hardness"></var>
         <var type = "joint_u" name = "joint"></var>
@@ -74,7 +74,7 @@
         <var type = "uint8_t" name = "meditation"></var>
     </struct>
     
-    <struct name = "packet">
+    <struct name = "packet" encode = "true" config="true">
         <var type="header_t" name="header"> </var>
         <var type="data_t" name = "data"></var>
         <var type = "uint32_t" name = "checksum" ></var>
