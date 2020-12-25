@@ -139,21 +139,6 @@
           <string>sum16</string>
          </property>
         </item>
-        <item>
-         <property name="text">
-          <string>crc8</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>crc16</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>crc32</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item>
@@ -261,11 +246,6 @@
         <item>
          <property name="text">
           <string>attribute</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>packed</string>
          </property>
         </item>
        </widget>

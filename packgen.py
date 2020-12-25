@@ -226,16 +226,16 @@ class MyForm(QMainWindow):
         pack_attr_front = ""
         pack_attr_end  = ""
         self.update_config()
-       
-        if self.pack_attr  == "pragma":
+     
+        #if self.pack_attr  == "pragma":
+        #    pack_attr_front = "#pragma pack(push,%s)\n" %(self.align)
+        #    pack_attr_end = "#pragma pack(pop)\n"
         
-            pack_attr_front = "#pragma pack(push,1)\n"
-            pack_attr_end = "#pragma pack(pop)\n"
-
         
         
         msg = ""
         msg += "#include \"stdint.h\"  \n"
+        #msg += "#pragma once"
         msg += "#ifndef __PACKET_H_ \n"
         msg += "#define __PACKET_H_ \n"
         
@@ -276,6 +276,7 @@ class MyForm(QMainWindow):
             msg += "typedef union %s_union{\n\n" %(union_name)
             
             for structs in union_vars:
+               
                 msg += " struct {\n"
                 for var in structs:
                     msg += "\t%s %s : %s;\n" %(var[0],var[1],var[2])
@@ -289,8 +290,14 @@ class MyForm(QMainWindow):
             struct_name = struct[0]
             struct_vars = struct[1]
             msg += "\n"
+            if self.pack_attr == "pragma":
+                msg += "#pragma pack(%s)\n"%(self.align)
+                msg += "#pragma scalar_storage_order %s-endian\n" %(self.endian)
+            elif self.pack_attr == "attr":
+                msg += "__attribute__((packed, aligned(%s), scalar_storage_order(\"%s\")))" %(self.align, self.endian)
+            
+            
             msg += "typedef struct "  + struct_name + "_struct{\n\n"
-
             for var in struct_vars:
                 msg+="\t" + var[0] + " " + var[1]+ ";\n"
             msg += "\n}"+ struct_name +"_t;\n"
