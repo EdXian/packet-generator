@@ -200,17 +200,112 @@ class MyForm(QMainWindow):
                 msg += "\t return sizeof(%s_t);\n"%(struct_name)
                 msg += "\n\n\n"
                 msg += "}\n" 
-
-
-
-
+        
+        
+        crc_value =''
+        
+        if self.check_method == "sum32" or self.check_method=="crc32":
+            crc_value +='''
+            
+            crc_val =(uint32_t)(buf[ind+0]<<0)  + 
+            						(uint32_t)(buf[ind+1]<<8)  + 
+            						(uint32_t)(buf[ind+2]<<16) + 
+            						(uint32_t)(buf[ind+3]<<24);
+            '''
+        elif self.check_method == "sum16"or self.check_method=="crc16":
+            crc_value +='''
+            
+            crc_val =(uint16_t)(buf[ind+0]<<0)  + 
+            						(uint16_t)(buf[ind+1]<<8);
+            					
+            '''
+        elif self.check_method == "sum8"or self.check_method=="crc8":
+            crc_value +='''
+            
+            crc_val =(uint8_t)(buf[ind+0]<<0);
+				
+            '''
+        ##parser
+        
+        msg+= '''
+            uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
+            	//need a struct to record FSM state
+            	uint32_t crc_val;
+            	buf[ps->rx_index] = data;
+            	
+            	switch (ps->state)
+            	{
+            		case PARSE_STATE_START:
+            			if (buf[ps->rx_index] == 0x55)
+            			{
+            				ps->state = PARSE_STATE_LEN;
+            			}
+            			break;
+            		case PARSE_STATE_LEN:
+            			if(buf[ps->rx_index]<255)   //packet should be smaller than 255 bytes
+            			{
+            				data_len = buf[ps->rx_index];
+            				ps->state = PARSE_STATE_DATA;
+            			}
+            			break;
+            		case PARSE_STATE_DATA:
+            			ps->now_idx++;
+            			if(ps->now_idx == data_len)
+            			{
+            				ps->state = PARSE_STATE_CHECK;
+            				uint8_t ind = PACK_XX_LEN - PACK_CRC_LEN;
+            				
+                            %s
+            
+            				 if(%s(buf,ind) == crc_val){
+            					ps->rx_index = 0;
+            					ps->now_idx = 0;
+            					ps->state = PARSE_STATE_START;
+            					return buf[2];
+            				 }
+            
+            			}
+            			break;
+            	}
+            	ps->rx_index++;
+            	return 0;
+            }
+         ''' % (crc_value,self.check_method)
+        # deocde
+        msg+='''
+                uint8_t packet_decode(uint8_t* buf,uint8_t msg_id){
+        	switch (msg_id)
+        	{
+        		case 1:
+        			
+        			memset(buf,0,200);
+        			break;
+        			
+        		case 2:
+        			
+        			memset(buf,0,200);
+        			break;
+        			
+        		case 3:
+        		
+        			memset(buf,0,200);
+        			break;
+        
+        	}
+        }
+        
+        
+        
+             '''
+        
+        
+        
         # send
         '''
         msg += "uint16_t uart_send(uint8_t *data,uint16_t len){\n" \
                     "\t "\
                 "}\n\n" 
         '''
-        ## decode
         
         ## IRQ_Handler
         

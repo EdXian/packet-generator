@@ -36,13 +36,13 @@
     </enum>
     
     <enum name = "meditation_mode">
-         <var name = "meditation_on" val = "0"> </var>
-        <var name = "meditation_off" val = "1"> </var>
-        <var name = "//reserved" val = "2"> </var>
+        <var name = "meditation_on" val = "0"> </var>
+	<var name = "meditation_lv1" val = "1"> </var>
+	<var name = "meditation_lv2" val = "2"> </var>
+	<var name = "meditation_lv3" val = "3"> </var>
+        <var name = "meditation_off" val = "4"> </var>
+        <var name = "//reserved" val = "5"> </var>
     </enum>
-    
-    
-    
     
     <!--uart-->
     <union name = "joint" anonymous_type = "uint8_t">
@@ -59,8 +59,9 @@
     
 
     <struct name = "header" encode = "false" config = "true">
-        <var type="uint8_t" name="deveice_type"> </var>
+        <var type="uint8_t" name="header"> </var>
         <var type="uint8_t" name="len"> </var>
+    	<var type="uint8_t" name="device_type"> </var>
         <var type="uint8_t" name="packet_type"> </var>
         <var type="uint8_t" name="sub_bed"> </var>
     </struct>  
@@ -72,6 +73,7 @@
         <var type = "uint8_t" name = "massage"></var>
         <var type = "uint8_t" name = "massage_level"></var>
         <var type = "uint8_t" name = "meditation"></var>
+	<var type = "uint8_t" name = "meditation_level"></var>
     </struct>
     
     <struct name = "packet" encode = "true" config="true">
@@ -79,6 +81,5 @@
         <var type="data_t" name = "data"></var>
         <var type = "uint32_t" name = "checksum" ></var>
     </struct>  
-     
-    <!--app-->
+
 </file>
