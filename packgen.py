@@ -287,7 +287,7 @@ uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
         # weak deocde function
         msg+='''
             __attribute__ ((weak))
-            uint8_t packet_decode(uint8_t* buf,uint8_t msg_id){
+            uint8_t message_decode(uint8_t* buf,uint8_t msg_id){
         	switch (msg_id)
         	{
         		case 1:
@@ -435,8 +435,8 @@ typedef struct parse_state{
             if self.pack_attr == "pragma":
                 msg += "#pragma pack(%s)\n"%(self.align)
                 msg += "#pragma scalar_storage_order %s-endian\n" %(self.endian)
-            elif self.pack_attr == "attr":
-                msg += "__attribute__((packed, aligned(%s), scalar_storage_order(\"%s\")))" %(self.align, self.endian)
+            elif self.pack_attr == "attribute":
+                msg += " __attribute__((packed, aligned(%s), scalar_storage_order(\"%s-endian\")))" %(self.align, self.endian)
             
             
             msg += "typedef struct "  + struct_name + "_struct{\n\n"
