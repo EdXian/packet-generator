@@ -188,20 +188,32 @@ class MyForm(QMainWindow):
                 msg += "\n}\n"
 
         ## encode
+ 
         for struct in self.structs:
+            
             struct_name = struct[0]
             struct_encode = struct[2]
             if struct_encode == "true":
-                msg +="uint16_t %s_encode(uint8_t* data, %s_t* pack, uint16_t len){\n" %( struct_name,     struct_name  )
-                msg += "\t memset(data, 0 , %s);\n" % ("PACK_LEN")
-                msg += "\t memcpy(data,pack,sizeof(%s_t));\n" %(struct_name)
-                msg += "\t pack->header.len = sizeof(%s_t)-1-1;\n" %(struct_name)
-                msg += "\t pack->checksum = check_function(pack, (sizeof(%s_t) -%s));\n" %(struct_name,crc_reserve_bytes)
-                msg += "\t return sizeof(%s_t);\n"%(struct_name)
-                msg += "\n\n\n"
-                msg += "}\n" 
-        
-        
+               
+                msg +="\n"
+                '''
+                msg += "#define PACK_%s_ID %s\n" %(struct_name,str(pack_id))
+                msg += "#define PACK_%s_LEN sizeof(%s_t)\n"% (struct_name, struct_name)
+                if self.check_method == "sum32" or self.check_method == "crc32":
+                    msg += "#define PACK_CRC_LEN %s\n" % ("4")
+                elif self.check_method == "sum16" or self.check_method == "crc16":
+                    msg += "#define PACK_CRC_LEN %s\n" % ("2")
+                elif self.check_method == "sum8" or self.check_method == "crc8":
+                    msg += "#define PACK_CRC_LEN %s\n" % ("1")
+                '''    
+                msg += '''
+uint16_t %(n)s_encode(uint8_t* data, %(n)s_t* pack, uint16_t len){
+	pack->header.packet_type = PACK_%(n)s_ID;
+	pack->header.len = sizeof(%(n)s_t)-1-1;
+	pack->checksum = check_function(pack, (sizeof(%(n)s_t) -%(s)s));
+	return sizeof(%(n)s_t);
+}
+            ''' %({'n': struct_name, 's': "4"})
         crc_value =''
         
         if self.check_method == "sum32" or self.check_method=="crc32":
@@ -228,52 +240,54 @@ class MyForm(QMainWindow):
         ##parser
         
         msg+= '''
-            uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
-            	//need a struct to record FSM state
-            	uint32_t crc_val;
-            	buf[ps->rx_index] = data;
-            	
-            	switch (ps->state)
-            	{
-            		case PARSE_STATE_START:
-            			if (buf[ps->rx_index] == 0x55)
-            			{
-            				ps->state = PARSE_STATE_LEN;
-            			}
-            			break;
-            		case PARSE_STATE_LEN:
-            			if(buf[ps->rx_index]<255)   //packet should be smaller than 255 bytes
-            			{
-            				data_len = buf[ps->rx_index];
-            				ps->state = PARSE_STATE_DATA;
-            			}
-            			break;
-            		case PARSE_STATE_DATA:
-            			ps->now_idx++;
-            			if(ps->now_idx == data_len)
-            			{
-            				ps->state = PARSE_STATE_CHECK;
-            				uint8_t ind = PACK_XX_LEN - PACK_CRC_LEN;
-            				
-                            %s
-            
-            				 if(%s(buf,ind) == crc_val){
-            					ps->rx_index = 0;
-            					ps->now_idx = 0;
-            					ps->state = PARSE_STATE_START;
-            					return buf[2];
-            				 }
-            
-            			}
-            			break;
-            	}
-            	ps->rx_index++;
-            	return 0;
-            }
+uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
+	//need a struct to record FSM state
+	uint32_t crc_val;
+	buf[ps->rx_index] = data;
+	
+	switch (ps->state)
+	{
+		case PARSE_STATE_START:
+			if (buf[ps->rx_index] == 0x55)
+			{
+				ps->state = PARSE_STATE_LEN;
+			}
+			break;
+		case PARSE_STATE_LEN:
+			if(buf[ps->rx_index]<250)   //packet should be smaller than 255 bytes
+			{
+				ps->data_len = buf[ps->rx_index];
+				ps->state = PARSE_STATE_DATA;
+			}
+			break;
+		case PARSE_STATE_DATA:
+			ps->now_idx++;
+			if(ps->now_idx == ps->data_len)
+			{
+				ps->state = PARSE_STATE_CHECK;
+				uint8_t ind = (ps->data_len+2) - PACK_CRC_LEN;
+				
+                %s
+
+				 if(%s(buf,ind) == crc_val){
+					ps->rx_index = 0;
+					ps->now_idx = 0;
+                    ps->data_len = 0;
+					ps->state = PARSE_STATE_START;
+					return buf[2];
+				 }
+
+			}
+			break;
+	}
+	ps->rx_index++;
+	return 0;
+}
          ''' % (crc_value,self.check_method)
-        # deocde
+        # weak deocde function
         msg+='''
-                uint8_t packet_decode(uint8_t* buf,uint8_t msg_id){
+            __attribute__ ((weak))
+            uint8_t packet_decode(uint8_t* buf,uint8_t msg_id){
         	switch (msg_id)
         	{
         		case 1:
@@ -296,9 +310,7 @@ class MyForm(QMainWindow):
         
         
         
-             '''
-        
-        
+        '''
         
         # send
         '''
@@ -380,11 +392,46 @@ class MyForm(QMainWindow):
             msg +=  "\n}%s_u;\n"%( union_name)
                     
                     
+        #print FSM state struct
+        msg+="\n"
+        msg+= '''
+        
+enum parser{
+	PARSE_STATE_START=0,
+	PARSE_STATE_LEN=1,
+	PARSE_STATE_DATA=2,
+	PARSE_STATE_CHECK =3
+};
+        
+typedef struct parse_state{
+	uint8_t now_idx;
+	uint8_t rx_index;
+	uint8_t state;
+	uint8_t data_len;
+}parse_state_t;
+            '''
+        msg+="\n"
         # print structs  //struct pack  little/big endian
+        pack_id = 0
         for struct in self.structs:
+            
             struct_name = struct[0]
             struct_vars = struct[1]
+            struct_encode = struct[2]
             msg += "\n"
+            if struct_encode == "true":
+                pack_id+=1
+                msg += "#define PACK_%s_ID %s\n" %(struct_name,str(pack_id))
+                msg += "#define PACK_%s_LEN sizeof(%s_t)\n"% (struct_name, struct_name)
+                if self.check_method == "sum32" or self.check_method == "crc32":
+                    msg += "#define PACK_CRC_LEN %s\n" % ("4")
+                elif self.check_method == "sum16" or self.check_method == "crc16":
+                    msg += "#define PACK_CRC_LEN %s\n" % ("2")
+                elif self.check_method == "sum8" or self.check_method == "crc8":
+                    msg += "#define PACK_CRC_LEN %s\n" % ("1")
+                           
+            
+            msg += "\n"            
             if self.pack_attr == "pragma":
                 msg += "#pragma pack(%s)\n"%(self.align)
                 msg += "#pragma scalar_storage_order %s-endian\n" %(self.endian)

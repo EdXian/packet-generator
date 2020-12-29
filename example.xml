@@ -61,8 +61,8 @@
     <struct name = "header" encode = "false" config = "true">
         <var type="uint8_t" name="header"> </var>
         <var type="uint8_t" name="len"> </var>
+    	<var type="uint8_t" name="packet_type"> </var>
     	<var type="uint8_t" name="device_type"> </var>
-        <var type="uint8_t" name="packet_type"> </var>
         <var type="uint8_t" name="sub_bed"> </var>
     </struct>  
     
@@ -82,4 +82,12 @@
         <var type = "uint32_t" name = "checksum" ></var>
     </struct>  
 
+    <struct name = "imu_msg" encode = "true" config="true">
+        <var type="header_t" name="header"> </var> 
+        <var type="float"   name = "accx"> </var>
+        <var type="float"   name = "accy"> </var>
+        <var type="float"   name = "accz"> </var>        
+        <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
 </file>
