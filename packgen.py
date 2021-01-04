@@ -31,11 +31,13 @@ class MyForm(QMainWindow):
         self.enums = list()
         self.unions = list()
         
+        
         self.gen_Button.clicked.connect(self.generate_pack)
         self.load_xml_Button.clicked.connect(self.load_xml_file)
+        self.excel_output_Button.clicked.connect(self.excel_generate_file)
+
         self.hfile_txt.setFont(QtGui.QFont('Arial', 15))
         self.cfile_txt.setFont(QtGui.QFont('Arial', 15))
-        
         
         self.check_method = self.check_method_comboBox.currentText()
         self.endian = self.endian_comboBox.currentText()
@@ -64,7 +66,10 @@ class MyForm(QMainWindow):
         except:
             QMessageBox.critical(self, 'Error', 'parse xml failed', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
-      
+    def excel_generate_file(self):
+        
+        
+        pass
            
            
     def parse_xml(self):   
