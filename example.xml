@@ -37,9 +37,9 @@
     
     <enum name = "meditation_mode">
         <var name = "meditation_on" val = "0"> </var>
-	<var name = "meditation_lv1" val = "1"> </var>
-	<var name = "meditation_lv2" val = "2"> </var>
-	<var name = "meditation_lv3" val = "3"> </var>
+        <var name = "meditation_lv1" val = "1"> </var>
+        <var name = "meditation_lv2" val = "2"> </var>
+        <var name = "meditation_lv3" val = "3"> </var>
         <var name = "meditation_off" val = "4"> </var>
         <var name = "//reserved" val = "5"> </var>
     </enum>

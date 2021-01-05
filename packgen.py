@@ -14,11 +14,16 @@ import sys
 import glob
 from dataclasses import dataclass
 import xml.etree.ElementTree as ET
-
+import string
 import resource
+import time
+from openpyxl.utils import get_column_letter
+from openpyxl import Workbook
+from openpyxl.styles import Alignment
+from openpyxl.styles import Color, PatternFill, Font, Border, Side
 
-
-
+from openpyxl.styles import colors
+from openpyxl.cell import Cell
 
 class MyForm(QMainWindow):
     def __init__(self):
@@ -67,8 +72,43 @@ class MyForm(QMainWindow):
             QMessageBox.critical(self, 'Error', 'parse xml failed', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
     def excel_generate_file(self):
+  
+        book = Workbook()
+        sheet = book.active
+        
+        sheet.cell(row=1, column=1).value = "Tx"
+        sheet.cell(row=1, column=2).value = "Frame name"
+        sheet.cell(row=1, column=3).value = "Frame Length"
+        sheet.cell(row=1, column=4).value = "Frame field"
+        sheet.cell(row=1, column=5).value = "Description"
+        sheet.cell(row=1, column=6).value = "Position"
+        sheet.cell(row=1, column=7).value = "Default value"
+        sheet.cell(row=1, column=8).value = "Unit"
+        sheet.cell(row=1, column=9).value = "Comments"
         
         
+        
+        #adjustment
+        #for rol in sheet.columns:
+        #set width
+        for i in  string.ascii_lowercase[:14]:          
+            sheet.column_dimensions[i].width = 25
+        #set text alignment    
+        for i in range(10):
+            currentCell = sheet.cell(row=1, column=i+1)
+            currentCell.alignment = Alignment(horizontal='center')
+        #set the color and borders of cells 
+        thin = Side(border_style="thin", color="000000")
+        for i in range(10):           
+            currentCell = sheet.cell(row=1, column=i+1)
+            currentCell.fill = PatternFill("solid", fgColor="00BBFF")
+            currentCell.border = Border(top=thin, left=thin, right=thin, bottom=thin)
+            
+            
+        
+        
+        
+        book.save("example.xlsx")
         pass
            
            
