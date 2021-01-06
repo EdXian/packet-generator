@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<file>
+<file name="packet">
     
     <macro name = "pack">
         <var name = "PACK_LEN" val = "200" >  </var>
@@ -73,7 +73,7 @@
         <var type = "uint8_t" name = "massage"></var>
         <var type = "uint8_t" name = "massage_level"></var>
         <var type = "uint8_t" name = "meditation"></var>
-	<var type = "uint8_t" name = "meditation_level"></var>
+    	<var type = "uint8_t" name = "meditation_level"></var>
     </struct>
     
     <struct name = "packet" encode = "true" config="true">

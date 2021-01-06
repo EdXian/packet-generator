@@ -86,8 +86,6 @@ class MyForm(QMainWindow):
         sheet.cell(row=1, column=8).value = "Unit"
         sheet.cell(row=1, column=9).value = "Comments"
         
-        
-        
         #adjustment
         #for rol in sheet.columns:
         #set width
@@ -103,11 +101,7 @@ class MyForm(QMainWindow):
             currentCell = sheet.cell(row=1, column=i+1)
             currentCell.fill = PatternFill("solid", fgColor="00BBFF")
             currentCell.border = Border(top=thin, left=thin, right=thin, bottom=thin)
-            
-            
-        
-        
-        
+
         book.save("example.xlsx")
         pass
            
@@ -119,6 +113,10 @@ class MyForm(QMainWindow):
             
             self.structs.clear()
             count =0
+            self.header_name = root.get('name')
+            self.header_name = self.header_name.upper()
+            
+            
             for i in root: 
 
               if i.tag == "macro" :
@@ -193,7 +191,7 @@ class MyForm(QMainWindow):
         msg = ""
         msg += ''
         
-        msg += '#include \"%s.h\"\n' % ("packet")  #include "xxx.h"
+        msg += '#include \"%s.h\"\n' % (self.header_name.lower())  #include "xxx.h"
         
         ''' 
         for struct in self.structs:
@@ -388,8 +386,8 @@ uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
         msg = ""
         msg += "#include \"stdint.h\"  \n"
         #msg += "#pragma once"
-        msg += "#ifndef __PACKET_H_ \n"
-        msg += "#define __PACKET_H_ \n"
+        msg += "#ifndef __%s_H_ \n" %(self.header_name.upper())
+        msg += "#define __%s_H_ \n" %(self.header_name.upper())
         
         
        

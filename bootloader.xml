@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<file name="boot">
+    
+    <macro name = "MSG_ID">
+        <var name = "BL_GET_VER" val = "0x51" >  </var>       
+        <var name = "BL_GET_HELP" val = "0x52" >  </var>
+        <var name = "BL_GET_CID" val = "0x53" >  </var>
+        <var name = "BL_GET_RDP_STATUS" val = "0x54" >  </var>       
+        <var name = "BL_GO_TO_ADDR" val = "0x55" >  </var>
+        <var name = "BL_FLASH_ERASE" val = "0x56" >  </var>
+        <var name = "BL_MEM_WRITE" val = "0x57" >  </var>       
+        <var name = "BL_EN_RW_PROTECT" val = "0x58" >  </var>        
+        <var name = "BL_MEM_READ" val = "0x59" >  </var>
+        <var name = "BL_READ_SECTOR_P_STATUS" val = "0x5A" >  </var>       
+        <var name = "BL_READ_LABEL" val = "0x5B" >  </var>          
+        <var name = "BL_DIS_R_W_PROTECT" val = "0x5C" >  </var>   
+        <var name = "BL_RESET_MCU" val = "0x5D" >  </var>                   
+    </macro>
+   
+   
+    <macro name = "PARAM">
+        <var name = "PACK_LEN" val = "200" >  </var>
+        <var name = "CRC_CHECK_LENGTH" val = "128" >  </var>
+        <var name = "BL_FLASH_IO" val = "FLASH_0" >  </var>        
+        <var name = "BL_USART_IO" val = "USART_0" >  </var>
+        <var name = "IS_BOOT_MODE" val = "(pin_mode == BOOT_MODE)" >  </var>
+        <var name = "BOOT_PIN" val = "boot_pin" >  </var>                        
+    </macro>
+    
+    <macro name = "CHIP_ID">
+        <var name = "CHIPID_W0" val = "((uint32_t*)( 0x008061FC))" >  </var>
+        <var name = "CHIPID_W1" val = "((uint32_t*)( 0x00806010))" >  </var>        
+        <var name = "CHIPID_W2" val = "((uint32_t*)( 0x00806014))" >  </var>
+        <var name = "CHIPID_W3" val = "((uint32_t*)( 0x00806018))" >  </var>
+    </macro>
+
+
+    <macro name = "MEMORY_MAP">
+        <var name = "BL_START_ADDRESS" val = "0x00000000" >  </var>
+        <var name = "BL_END_ADDRESS" val = "0x00002000" >  </var>        
+        <var name = "APP_START_ADDRESS" val = "0x6000" >  </var>
+        <var name = "APP_END_ADDRESS" val = "0x37FFF" >  </var>
+        <var name = "APP_SIZE" val = "(APP_END_ADDRESS-APP_START_ADDRESS)" >  </var>
+        
+        <var name = "BACKUP_APP_START_ADDRESS" val = "0x42000" >  </var>
+        <var name = "BACKUP_APP_END_ADDRESS" val = "0x73FFF" >  </var>
+        <var name = "BACKUP_APP_SIZE" val = "(BACKUP_APP_END_ADDRESS-BACKUP_APP_START_ADDRESS)" >  </var>
+        
+        <var name = "APP_CRC_VALID_AREA_START_ADDRESS" val = "0x38000" >  </var>
+        <var name = "APP_CRC_VALID_AREA" val = "( APP_CRC_VALID_AREA_START_ADDRESS + ((APP_SIZE>>7)<<2) )" >  </var>
+        <var name = "BACKUP_CRC_VALID_AREA_START_ADDRESS" val = "0x74000" >  </var>
+        <var name = "APP_CRC_VALID_AREA" val = "( BACKUP_CRC_VALID_AREA_START_ADDRESS + ((APP_SIZE>>7)<<2) )   // (APP_SIZE/CRC_CHECK_LENGTH)" >  </var>
+        
+        <var name = "LOG_BASE" val = "0x00080000" >  </var>
+        <var name = "CALB_PARA_AREA" val = "(LOG_BASE + 0x000)" >  </var>
+        <var name = "LOG_INFO_AREA" val = "(LOG_BASE + 0x100)" >  </var>
+        <var name = "LOG_DATA_AREA" val = "(LOG_BASE + 0x200)" >  </var>
+        <var name = "LABEL_BASE" val = "0x00005E00" >  </var>      
+    </macro>
+    
+    
+    
+    
+   <struct name = "boot_write" encode="true" config="true">
+        <var type="uint8_t" name="header"> </var> 
+        <var type="uint8_t" name="len"> </var> 
+        <var type="uint8_t" name="cmd"> </var> 
+        <var type = "uint32_t" name = "start_addr" ></var>
+        
+        
+        
+        
+   </struct>
+    <struct name = "imu_msg" encode = "true" config="true">
+        <var type="header_t" name="header"> </var> 
+        <var type="imu_data_t" name="data"> </var> 
+        <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+</file>
