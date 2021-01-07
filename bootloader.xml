@@ -16,18 +16,20 @@
         <var name = "BL_DIS_R_W_PROTECT" val = "0x5C" >  </var>   
         <var name = "BL_RESET_MCU" val = "0x5D" >  </var>                   
     </macro>
-   
-   
+
+
     <macro name = "PARAM">
         <var name = "PACK_LEN" val = "200" >  </var>
+        <var name = "BOOT_MODE" val = "0" >  </var>
         <var name = "CRC_CHECK_LENGTH" val = "128" >  </var>
         <var name = "BL_FLASH_IO" val = "FLASH_0" >  </var>        
         <var name = "BL_USART_IO" val = "USART_0" >  </var>
         <var name = "IS_BOOT_MODE" val = "(pin_mode == BOOT_MODE)" >  </var>
-        <var name = "BOOT_PIN" val = "boot_pin" >  </var>                        
+        <var name = "BL_ACK" val = "0XA5" >  </var>
+        <var name = "BL_NACK" val = "0X7F" >  </var>                        
     </macro>
     
-    <macro name = "CHIP_ID">
+  <macro name = "CHIP_ID">
         <var name = "CHIPID_W0" val = "((uint32_t*)( 0x008061FC))" >  </var>
         <var name = "CHIPID_W1" val = "((uint32_t*)( 0x00806010))" >  </var>        
         <var name = "CHIPID_W2" val = "((uint32_t*)( 0x00806014))" >  </var>
@@ -35,7 +37,8 @@
     </macro>
 
 
-    <macro name = "MEMORY_MAP">
+   
+  <macro name = "MEMORY_MAP">
         <var name = "BL_START_ADDRESS" val = "0x00000000" >  </var>
         <var name = "BL_END_ADDRESS" val = "0x00002000" >  </var>        
         <var name = "APP_START_ADDRESS" val = "0x6000" >  </var>
@@ -45,36 +48,148 @@
         <var name = "BACKUP_APP_START_ADDRESS" val = "0x42000" >  </var>
         <var name = "BACKUP_APP_END_ADDRESS" val = "0x73FFF" >  </var>
         <var name = "BACKUP_APP_SIZE" val = "(BACKUP_APP_END_ADDRESS-BACKUP_APP_START_ADDRESS)" >  </var>
-        
-        <var name = "APP_CRC_VALID_AREA_START_ADDRESS" val = "0x38000" >  </var>
-        <var name = "APP_CRC_VALID_AREA" val = "( APP_CRC_VALID_AREA_START_ADDRESS + ((APP_SIZE>>7)<<2) )" >  </var>
-        <var name = "BACKUP_CRC_VALID_AREA_START_ADDRESS" val = "0x74000" >  </var>
-        <var name = "APP_CRC_VALID_AREA" val = "( BACKUP_CRC_VALID_AREA_START_ADDRESS + ((APP_SIZE>>7)<<2) )   // (APP_SIZE/CRC_CHECK_LENGTH)" >  </var>
-        
-        <var name = "LOG_BASE" val = "0x00080000" >  </var>
-        <var name = "CALB_PARA_AREA" val = "(LOG_BASE + 0x000)" >  </var>
-        <var name = "LOG_INFO_AREA" val = "(LOG_BASE + 0x100)" >  </var>
-        <var name = "LOG_DATA_AREA" val = "(LOG_BASE + 0x200)" >  </var>
-        <var name = "LABEL_BASE" val = "0x00005E00" >  </var>      
-    </macro>
+    
+    </macro>     
     
     
-    
-    
-   <struct name = "boot_write" encode="true" config="true">
-        <var type="uint8_t" name="header"> </var> 
-        <var type="uint8_t" name="len"> </var> 
-        <var type="uint8_t" name="cmd"> </var> 
-        <var type = "uint32_t" name = "start_addr" ></var>
-        
-        
-        
-        
-   </struct>
-    <struct name = "imu_msg" encode = "true" config="true">
-        <var type="header_t" name="header"> </var> 
-        <var type="imu_data_t" name="data"> </var> 
-        <var type = "uint32_t" name = "checksum" ></var>
+    <struct name = "header" encode = "false" config = "true">
+        <var type="uint8_t" name="header"> </var>
+        <var type="uint8_t" name="len"> </var>
+    	<var type="uint8_t" name="packet_type"> </var>
+    </struct>      
+
+
+    <!--transmit error message-->
+    <struct name = "err" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
     </struct>
     
+    <struct name = "err_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+
+    <!--get version command-->
+    <struct name = "bl_get_ver" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    <struct name = "bl_get_ver_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t"   name = "major"></var>
+       <var type="uint8_t"   name = "minor"></var>
+       <var type="uint8_t"   name = "patch"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    
+     <!--get chip_id command-->   
+    <struct name = "bl_get_id" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    
+    <struct name = "bl_get_id_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint32_t" name="chip_id"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    
+    
+     <!--jump to application command-->
+     <struct name = "bl_jump_app" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint32_t" name="addr"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>   
+    
+     <struct name = "bl_jump_app_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct> 
+
+
+     <!--flash erase command-->
+     <struct name = "bl_mem_erase" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint32_t" name="start_addr"></var>
+       <var type="uint32_t" name="end_addr"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>   
+    
+     <struct name = "bl_mem_erase_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+     <!--flash write command  max 128bytes-->
+     <struct name = "bl_mem_write" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint32_t" name="start_addr"></var>
+       <var type="uint8_t" name="length"></var>
+       <var type="uint8_t" name="data[128]"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>   
+    
+     <struct name = "bl_mem_write_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct> 
+    
+    
+    
+     <!--flash write command  max 128bytes-->
+     <struct name = "bl_mem_read" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint32_t" name="start_addr"></var>
+       <var type="uint32_t" name="end_addr"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>   
+    
+     <struct name = "bl_mem_read_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"></var>
+       <var type="uint8_t" name="length"></var>
+       <var type="uint8_t" name="data[128]"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    
+     <!--reset command  -->
+     <struct name = "bl_reset" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>   
+    
+     <struct name = "bl_reset_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    
+     <!--verify command  -->
+     <struct name = "bl_verify" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint32_t" name= "start_addr"></var>
+       <var type="uint32_t" name= "end_addr"></var>
+       <var type="uint32_t" name= "verify_code"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>   
+    
+     <struct name = "bl_verify_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    
+     
 </file>

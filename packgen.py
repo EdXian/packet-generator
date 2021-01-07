@@ -251,12 +251,13 @@ class MyForm(QMainWindow):
                 '''    
                 msg += '''
 uint16_t %(n)s_encode(uint8_t* data, %(n)s_t* pack, uint16_t len){
-	pack->header.packet_type = PACK_%(n)s_ID;
+	pack->header.header = 0x55;
+    pack->header.packet_type = PACK_%(N)s_ID;
 	pack->header.len = sizeof(%(n)s_t)-1-1;
 	pack->checksum = check_function(pack, (sizeof(%(n)s_t) -%(s)s));
 	return sizeof(%(n)s_t);
 }
-            ''' %({'n': struct_name, 's': "4"})
+            ''' %({'n': struct_name, 's': "4",'N':struct_name.upper()})
         crc_value =''
         
         if self.check_method == "sum32" or self.check_method=="crc32":
@@ -283,6 +284,7 @@ uint16_t %(n)s_encode(uint8_t* data, %(n)s_t* pack, uint16_t len){
         ##parser
         
         msg+= '''
+ __attribute__ ((weak))  
 uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
 	//need a struct to record FSM state
 	uint32_t crc_val;
@@ -464,8 +466,8 @@ typedef struct parse_state{
             msg += "\n"
             if struct_encode == "true":
                 pack_id+=1
-                msg += "#define PACK_%s_ID %s\n" %(struct_name,str(pack_id))
-                msg += "#define PACK_%s_LEN sizeof(%s_t)\n"% (struct_name, struct_name)
+                msg += "#define PACK_%s_ID %s\n" %(struct_name.upper(),str(pack_id))
+                msg += "#define PACK_%s_LEN sizeof(%s_t)\n"% (struct_name.upper(), struct_name)
                 if self.check_method == "sum32" or self.check_method == "crc32":
                     msg += "#define PACK_CRC_LEN %s\n" % ("4")
                 elif self.check_method == "sum16" or self.check_method == "crc16":
