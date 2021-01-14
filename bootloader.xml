@@ -57,7 +57,14 @@
         <var type="uint8_t" name="len"> </var>
     	<var type="uint8_t" name="packet_type"> </var>
     </struct>      
-
+    
+    
+    <struct name = "label" encode = "false" config = "false">
+        <var type="uint32_t" name="app_addr"> </var>
+        <var type="uint8_t" name="major"> </var>
+        <var type="uint8_t" name="minor"> </var>
+        <var type="uint8_t" name="patch"> </var>
+    </struct> 
 
     <!--transmit error message-->
     <struct name = "err" encode = "true" config = "true">
@@ -85,6 +92,23 @@
     </struct>
     
     
+    <!--set chip_id command--> 
+    <struct name = "bl_set_ver" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint32_t" name="app_addr"> </var>
+       <var type="uint8_t" name="major"> </var>
+       <var type="uint8_t" name="minor"> </var>
+       <var type="uint8_t" name="patch"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    <struct name = "bl_set_ver_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    
+    
      <!--get chip_id command-->   
     <struct name = "bl_get_id" encode = "true" config = "true">
        <var type="header_t" name="header"> </var>
@@ -98,8 +122,7 @@
        <var type = "uint32_t" name = "checksum" ></var>
     </struct>
     
-    
-    
+
      <!--jump to application command-->
      <struct name = "bl_jump_app" encode = "true" config = "true">
        <var type="header_t" name="header"> </var>
@@ -145,7 +168,7 @@
     
     
     
-     <!--flash write command  max 128bytes-->
+     <!--flash read command  max 128bytes-->
      <struct name = "bl_mem_read" encode = "true" config = "true">
        <var type="header_t" name="header"> </var>
        <var type="uint32_t" name="start_addr"></var>
@@ -156,7 +179,7 @@
      <struct name = "bl_mem_read_ack" encode = "true" config = "true">
        <var type="header_t" name="header"> </var>
        <var type="uint8_t" name="valid"></var>
-       <var type="uint8_t" name="length"></var>
+       <var type="uint8_t" name="read_length"></var>
        <var type="uint8_t" name="data[128]"></var>
        <var type = "uint32_t" name = "checksum" ></var>
     </struct>

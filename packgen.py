@@ -387,6 +387,7 @@ uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
         
         msg = ""
         msg += "#include \"stdint.h\"  \n"
+        msg += "#include \"stdio.h\"  \n"
         #msg += "#pragma once"
         msg += "#ifndef __%s_H_ \n" %(self.header_name.upper())
         msg += "#define __%s_H_ \n" %(self.header_name.upper())
@@ -453,6 +454,7 @@ typedef struct parse_state{
 	uint8_t rx_index;
 	uint8_t state;
 	uint8_t data_len;
+	uint8_t start_idx;
 }parse_state_t;
             '''
         msg+="\n"
