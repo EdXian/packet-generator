@@ -284,46 +284,69 @@ uint16_t %(n)s_encode(uint8_t* data, %(n)s_t* pack, uint16_t len){
         ##parser
         
         msg+= '''
- __attribute__ ((weak))  
 uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
 	//need a struct to record FSM state
+	//err_t  err;
+	uint8_t err_buf[10];
 	uint32_t crc_val;
+	uint8_t ret;
+	uint8_t i=0;
+	//uint8_t start_idx;
 	buf[ps->rx_index] = data;
 	
 	switch (ps->state)
 	{
 		case PARSE_STATE_START:
-			if (buf[ps->rx_index] == 0x55)
-			{
-				ps->state = PARSE_STATE_LEN;
+		
+		for (i=0;i<PACK_LEN;i++)
+		{
+			if(buf[i] == 0x55){
+				ps->start_idx = i;
+				break;
 			}
-			break;
+		}
+		if(buf[ps->start_idx] == 0x55)
+		{
+			ps->state = PARSE_STATE_LEN;
+		}
+		break;
 		case PARSE_STATE_LEN:
-			if(buf[ps->rx_index]<250)   //packet should be smaller than 255 bytes
-			{
-				ps->data_len = buf[ps->rx_index];
-				ps->state = PARSE_STATE_DATA;
-			}
-			break;
+		if(buf[ps->start_idx+1]<PACK_LEN)   //packet should be smaller than 255 bytes
+		{
+			ps->data_len = buf[ps->start_idx+1];
+			ps->state = PARSE_STATE_DATA;
+		}
+		break;
 		case PARSE_STATE_DATA:
-			ps->now_idx++;
-			if(ps->now_idx == ps->data_len)
-			{
-				ps->state = PARSE_STATE_CHECK;
-				uint8_t ind = (ps->data_len+2) - PACK_CRC_LEN;
+		ps->now_idx++;
+		if(ps->now_idx == ps->data_len)
+		{
+			ps->state = PARSE_STATE_CHECK;
+			uint8_t ind = ps->start_idx + (ps->data_len+2) - PACK_CRC_LEN;
+			uint8_t len = (ps->data_len+2)- PACK_CRC_LEN;
+			
+            %s
+
+			if(%s(&buf[ps->start_idx],len) == crc_val){
+				ps->start_idx = 0;
+				ps->rx_index = 0;
+				ps->now_idx = 0;
+				ps->data_len = 0;
+				ps->state = PARSE_STATE_START;
+				return buf[ps->start_idx+2];
+			}else{
 				
-                %s
-
-				 if(%s(buf,ind) == crc_val){
-					ps->rx_index = 0;
-					ps->now_idx = 0;
-                    ps->data_len = 0;
-					ps->state = PARSE_STATE_START;
-					return buf[2];
-				 }
-
+				ps->rx_index = 0;
+				ps->now_idx = 0;
+				ps->data_len = 0;
+				ps->state = PARSE_STATE_START;
+				//send error ack
+				//err_encode(err_buf,&err,sizeof(err));
+				//uart_send(&err,sizeof(err));
+			
 			}
-			break;
+		}
+		break;
 	}
 	ps->rx_index++;
 	return 0;

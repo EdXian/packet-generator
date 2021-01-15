@@ -32,7 +32,7 @@
         <var name = "off" val = "0"> </var>
         <var name = "joint" val = "1"> </var>
         <var name = "disjoint" val = "2"> </var>
-        <var name = "free" val = "3"> </var>
+        <var name = "free_mode" val = "3"> </var>
     </enum>
     
     <enum name = "meditation_mode">
@@ -63,6 +63,7 @@
         <var type="uint8_t" name="len"> </var>
     	<var type="uint8_t" name="packet_type"> </var>
     	<var type="uint8_t" name="device_type"> </var>
+        <var type="uint8_t" name="msg_id"> </var>
         <var type="uint8_t" name="sub_bed"> </var>
     </struct>  
     
@@ -82,16 +83,13 @@
         <var type = "uint32_t" name = "checksum" ></var>
     </struct>  
 
-    <struct name = "imu_data" encode = "false" config = "true">
-        <var type="float" name="accx"> </var>
-        <var type="float" name="accy"> </var>
-    	<var type="float" name="accz"> </var>
-    </struct>  
-
-    <struct name = "imu_msg" encode = "true" config="true">
-        <var type="header_t" name="header"> </var> 
-        <var type="imu_data_t" name="data"> </var> 
-        <var type = "uint32_t" name = "checksum" ></var>
+    <struct name = "packet_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"></var>
+       <var type="uint8_t" name="status"></var>
+       <var type="uint8_t" name="hardness"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
     </struct>
-    
+
+
 </file>
