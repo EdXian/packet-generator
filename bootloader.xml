@@ -155,6 +155,8 @@
      <struct name = "bl_mem_write" encode = "true" config = "true">
        <var type="header_t" name="header"> </var>
        <var type="uint32_t" name="start_addr"></var>
+       <var type="uint8_t" name="follows"></var>
+       <var type="uint8_t" name="write"></var>
        <var type="uint8_t" name="length"></var>
        <var type="uint8_t" name="data[128]"></var>
        <var type = "uint32_t" name = "checksum" ></var>
