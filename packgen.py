@@ -211,7 +211,16 @@ class MyForm(QMainWindow):
         msg += "%s check_function(uint8_t* pack,uint16_t len){\n" \
                     "\t return %s(pack, len);\n"\
                 "}\n\n" % ((crc_return_type),self.check_method)
-        
+        msg +='''
+        void parser_init(parse_state_t *ps){
+        	ps->data_len = 0;
+        	ps->start_idx = 0;
+        	ps->rx_index = 0;
+        	ps->now_idx = 0;
+        	ps->data_len = 0;
+        	ps->state = PARSE_STATE_START;
+        }
+        '''
         ## input argument
         for struct in self.structs:
             struct_name = struct[0]
@@ -328,18 +337,18 @@ uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
             %s
 
 			if(%s(&buf[ps->start_idx],len) == crc_val){
-				ps->start_idx = 0;
-				ps->rx_index = 0;
-				ps->now_idx = 0;
-				ps->data_len = 0;
-				ps->state = PARSE_STATE_START;
+				//ps->start_idx = 0;
+				//ps->rx_index = 0;
+				//ps->now_idx = 0;
+				//ps->data_len = 0;
+				//ps->state = PARSE_STATE_START;
 				return buf[ps->start_idx+2];
 			}else{
 				
-				ps->rx_index = 0;
-				ps->now_idx = 0;
-				ps->data_len = 0;
-				ps->state = PARSE_STATE_START;
+				//ps->rx_index = 0;
+				//ps->now_idx = 0;
+				//ps->data_len = 0;
+				//ps->state = PARSE_STATE_START;
 				//send error ack
 				//err_encode(err_buf,&err,sizeof(err));
 				//uart_send(&err,sizeof(err));
@@ -355,22 +364,25 @@ uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
         # weak deocde function
         msg+='''
             __attribute__ ((weak))
-            uint8_t message_decode(uint8_t* buf,uint8_t msg_id){
+            uint8_t message_decode(uint8_t* buf,uint8_t msg_id, parse_state_t* ps){
         	switch (msg_id)
         	{
         		case 1:
-        			
+        			//memcpy(&pack,&buf[ps->start_idx],sizeof(packet_t));
         			memset(buf,0,200);
+                    parser_init(ps);
         			break;
         			
         		case 2:
         			
         			memset(buf,0,200);
+                    parser_init(ps);
         			break;
         			
         		case 3:
         		
         			memset(buf,0,200);
+                    parser_init(ps);
         			break;
         
         	}
