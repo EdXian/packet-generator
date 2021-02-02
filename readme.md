@@ -141,6 +141,21 @@ uint8_t message_decode(uint8_t* buf_,uint8_t msg_id, parse_state_t* ps){
 
 ### Structure of a Packet
 
-The following figure shows the general structure of a packet.
+The following figure shows the general structure of a packet. A packet consists of header, payload and checksum.
+
 
 ![](https://i.imgur.com/zg8it96.png)
+
+#### header: 
+header provides the basic information of a packet which includes:
+head : the start of packet which indicates the beginning of a packet.
+len : the length of following bytes.
+packet_type: the type of pack
+device_type: the type of device
+msg_id : reserved byte
+sub_id : reserved byte
+
+#### payload:
+Depends on packet type (i.e. packet_type).
+#### checksum:
+To check the validation of a packet.
