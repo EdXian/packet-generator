@@ -5,25 +5,15 @@ from PyQt5.QtCore import QDate, QTime, QDateTime, Qt,QFile
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QMessageBox
 from PyQt5.QtWidgets import* 
 from PyQt5.uic import loadUi
-import serial.tools.list_ports
-from serial import SerialException
-import serial
 import struct
 import os
 import sys
 import glob
-from dataclasses import dataclass
 import xml.etree.ElementTree as ET
 import string
 import resource
 import time
-from openpyxl.utils import get_column_letter
-from openpyxl import Workbook
-from openpyxl.styles import Alignment
-from openpyxl.styles import Color, PatternFill, Font, Border, Side
 
-from openpyxl.styles import colors
-from openpyxl.cell import Cell
 
 class MyForm(QMainWindow):
     def __init__(self):
