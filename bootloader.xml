@@ -215,6 +215,37 @@
        <var type = "uint32_t" name = "checksum" ></var>
     </struct>
     
+     <!--option command  -->
+     <struct name = "bl_get_acc_cmd" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>   
     
-     
+     <struct name = "bl_get_acc_cmd_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint32_t" name="scale"></var>
+       <var type="float" name="acc_x"></var>
+       <var type="float" name="acc_y"></var>
+       <var type="float" name="acc_z"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+     <struct name = "bl_set_acc_offset_cmd" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="float" name="norm"></var>
+       <var type="float" name="acc_x_offset"></var>
+       <var type="float" name="acc_y_offset"></var>
+       <var type="float" name="acc_z_offset"></var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>   
+    
+     <struct name = "bl_set_acc_offset_cmd_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    
+    
+    
 </file>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<file name="packet">
+    <macro name = "pack">
+        <var name = "PACK_LEN" val = "200" >  </var>
+    </macro>
+    
+    <struct name = "header" encode = "false" config = "true">
+        <var type="uint8_t" name="header"> </var>
+        <var type="uint8_t" name="len"> </var>
+    	<var type="uint8_t" name="packet_type"> </var>
+    </struct>  
+    
+    <struct name = "data" encode = "false" config = "true">
+        <var type = "float" name = "scale"></var>
+        <var type = "float" name = "acc_x"></var>
+        <var type = "float" name = "acc_y"></var>
+        <var type = "float" name = "acc_z"></var>
+    </struct>
+    
+    <struct name = "packet" encode = "true" config="true">
+        <var type="header_t" name="header"> </var>
+        <var type = "uint32_t" name = "checksum" ></var>
+    </struct>  
+    
+    <struct name = "packet_ack" encode = "true" config="true">
+        <var type="header_t" name="header"> </var>
+        <var type="data_t" name = "data"></var>
+        <var type = "uint32_t" name = "checksum" ></var>
+    </struct>  
+</file>
