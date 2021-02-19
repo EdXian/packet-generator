@@ -151,7 +151,6 @@ class MyForm(QMainWindow):
         
         self.cfile_txt.setText("")
         self.hfile_txt.setText("")
-        
         self.generate_cfile()
         self.generate_hfile()                       
              
@@ -180,7 +179,19 @@ class MyForm(QMainWindow):
         
         msg = ""
         msg += ''
-        
+        msg += '''
+/**
+ * @file test.c
+ * @author edxian 
+ * @brief 
+ * @version 1.1
+ * @date 2021-02-18
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+        '''
+        msg += '\n'
         msg += '#include \"%s.h\"\n' % (self.header_name.lower())  #include "xxx.h"
         
         ''' 
@@ -196,12 +207,26 @@ class MyForm(QMainWindow):
         #crc_function
         msg += f_check_func
         msg += "\n"
-        
+        msg+='''
+/**
+ * @brief  to check the validation of packet
+ * 
+ * @param pack the receieved packet
+ * @param len the legnth of the receieved packet
+ * @return uint32_t the checksum value of the receieved packet 
+ */
+        '''
         # check function
         msg += "%s check_function(uint8_t* pack,uint16_t len){\n" \
                     "\t return %s(pack, len);\n"\
                 "}\n\n" % ((crc_return_type),self.check_method)
         msg +='''
+ /**
+ * @brief to init the state of the parser
+ * 
+ * @param ps the state of the parser
+ */
+       
         void parser_init(parse_state_t *ps){
         	ps->data_len = 0;
         	ps->start_idx = 0;
@@ -225,6 +250,17 @@ class MyForm(QMainWindow):
                         arg += "\n\t      %s %s" %(i[0],i[1])
                     else:
                         arg += "\n\t      %s %s," %(i[0],i[1])
+                msg +='''
+/**
+ * @brief The function to config a packet
+ * 
+ * @param pack  a pointer of a header_t-type packet
+ * @param header the start of header
+ * @param len  the length of a packet
+ * @param packet_type the id of a specific packet
+ */
+                
+                '''
                 msg +="void %s_config(%s_t* pack,%s){\n" %(struct_name,struct_name,arg)
                 msg += statement
                 msg += "\n}\n"
@@ -249,6 +285,16 @@ class MyForm(QMainWindow):
                     msg += "#define PACK_CRC_LEN %s\n" % ("1")
                 '''    
                 msg += '''
+/**
+ * @brief encoded  packet
+ * 
+ * @param data NULL
+ * @param pack the pointer of  packet
+ * @param len the length of packet
+ * @return uint16_t 
+ */                
+                
+
 uint16_t %(n)s_encode(uint8_t* data, %(n)s_t* pack, uint16_t len){
 	pack->header.header = 0x55;
     pack->header.packet_type = PACK_%(N)s_ID;
@@ -283,6 +329,16 @@ uint16_t %(n)s_encode(uint8_t* data, %(n)s_t* pack, uint16_t len){
         ##parser
         
         msg+= '''
+        
+/**
+ * @brief a state machined to parser unknown packet.
+ * 
+ * @param buf a buffer for storing temperature data
+ * @param data  a receieved byte to be stored into buffer 
+ * @param ps  parser state
+ * @return uint8_t 
+ */        
+        
 uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
 	//need a struct to record FSM state
 	//err_t  err;
@@ -411,6 +467,19 @@ uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
         
         
         msg = ""
+        msg += '''
+  /**
+ * @file test.h
+ * @author edxian
+ * @brief 
+ * @version 1.1
+ * @date 2021-02-18
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */      
+     '''
+        msg += '\n'
         msg += "#include \"stdint.h\"  \n"
         msg += "#include \"stdio.h\"  \n"
         #msg += "#pragma once"
