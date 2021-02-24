@@ -2,7 +2,7 @@
 <file name="packet">
     
     <macro name = "pack">
-        <var name = "PACK_LEN" val = "200" >  </var>
+        <var name = "PACK_LEN" val = "200" brief="the legnth">  </var>
     </macro>
     
     <enum name = "device_type">

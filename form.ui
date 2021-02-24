@@ -284,7 +284,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -355,6 +355,109 @@
             <family>Arial</family>
            </font>
           </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>structure</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QTreeWidget" name="xml_parse_treeWidget">
+          <column>
+           <property name="text">
+            <string>type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>brief</string>
+           </property>
+          </column>
+          <item>
+           <property name="text">
+            <string>header_t</string>
+           </property>
+           <property name="text">
+            <string>header</string>
+           </property>
+           <property name="text">
+            <string>definition of  header-type</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>uint8_t</string>
+            </property>
+            <property name="text">
+             <string>head</string>
+            </property>
+            <property name="text">
+             <string>SoF</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>uint8_t</string>
+            </property>
+            <property name="text">
+             <string>len</string>
+            </property>
+            <property name="text">
+             <string>the legnth of content</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>packet_t</string>
+           </property>
+           <property name="text">
+            <string>packet</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <item>
+            <property name="text">
+             <string>header_t</string>
+            </property>
+            <property name="text">
+             <string>header</string>
+            </property>
+            <property name="text">
+             <string>the header of packet</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>uint8_t[10]</string>
+            </property>
+            <property name="text">
+             <string>payload</string>
+            </property>
+            <property name="text">
+             <string>the payload of packet</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>uint32_t </string>
+            </property>
+            <property name="text">
+             <string>checksum</string>
+            </property>
+            <property name="text">
+             <string>the checksum</string>
+            </property>
+           </item>
+          </item>
          </widget>
         </item>
        </layout>

@@ -57,10 +57,39 @@ class MyForm(QMainWindow):
                self.xml_tree = ET.parse(self.app_file_location)
                self.parse_xml()
                #QMessageBox.critical(self, 'Error', 'parse xml failed', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-
         except:
             QMessageBox.critical(self, 'Error', 'parse xml failed', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        
+        self.show_tree_view(self.structs)
+        #load tree widget
+        
+        
+        
+    def show_tree_view(self,data_list):
+        for i in self.structs:
+            print(i)
+            
+        #l1 = QTreeWidgetItem(["String A", "String B", "String C"])
+        #l2 = QTreeWidgetItem(["String AA", "String BB", "String CC"])    
+                
+        '''
+        for i in range(3):
+            l1_child = QTreeWidgetItem(["Child A" + str(i), "Child B" + str(i), "Child C" + str(i)])
+            l1.addChild(l1_child)
 
+        for j in range(2):
+            l2_child = QTreeWidgetItem(["Child AA" + str(j), "Child BB" + str(j), "Child CC" + str(j)])
+            l2.addChild(l2_child)
+        
+        self.xml_parse_treeWidget.setColumnCount(3)
+        self.xml_parse_treeWidget.setHeaderLabels(["type", "name", "brief"])
+        l2.addChild(l1)
+        self.xml_parse_treeWidget.addTopLevelItem(l1)
+        self.xml_parse_treeWidget.addTopLevelItem(l2)
+        '''
+        
+        
+        
     def excel_generate_file(self):
   
         book = Workbook()
@@ -337,8 +366,8 @@ uint16_t %(n)s_encode(uint8_t* data, %(n)s_t* pack, uint16_t len){
  * @param data  a receieved byte to be stored into buffer 
  * @param ps  parser state
  * @return uint8_t 
- */        
-        
+ */
+    
 uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
 	//need a struct to record FSM state
 	//err_t  err;
@@ -468,7 +497,7 @@ uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
         
         msg = ""
         msg += '''
-  /**
+/**
  * @file test.h
  * @author edxian
  * @brief 
@@ -477,7 +506,7 @@ uint8_t packet_parser(uint8_t* buf,uint8_t data,parse_state_t* ps){
  * 
  * @copyright Copyright (c) 2021
  * 
- */      
+*/      
      '''
         msg += '\n'
         msg += "#include \"stdint.h\"  \n"
