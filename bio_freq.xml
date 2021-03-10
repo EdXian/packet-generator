@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<file name="packet">
+    
+    <macro name = "pack">
+        <var name = "PACK_LEN" val = "200" brief="the legnth">  </var>
+    </macro>
+    
+    <struct name = "header" encode = "false" config = "true">
+        <var type="uint8_t" name="header"> </var>
+        <var type="uint8_t" name="len"> </var>
+    	<var type="uint8_t" name="packet_type"> </var>
+    </struct>  
+    
+    <struct name = "dsp_init_pack" encode = "true" config="true">
+        <var type="header_t" name="header"> </var>
+        <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    <struct name = "dsp_init_pack_ack" encode = "true" config="true">
+        <var type="header_t" name="header"> </var>
+        <var type="uint8_t" name="valid"> </var>
+        <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    <struct name = "dsp_data_input_pack" encode = "true" config="true">
+        <var type="header_t" name="header"> </var>
+        <var type="int32_t" name = "pressure"></var>
+        <var type="int16_t" name = "accx"></var>
+        <var type="int16_t" name = "accy"></var>
+        <var type="int16_t" name = "accz"></var>
+        <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+
+    <struct name = "dsp_data_input_pack_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+
+
+    <struct name = "dsp_pressure_input_pack" encode = "true" config="true">
+        <var type="header_t" name="header"> </var>
+        <var type="int32_t" name = "pressure"></var>
+        <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+
+    <struct name = "dsp_pressure_input_pack_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+
+    
+    <struct name = "dsp_acc_input_pack" encode = "true" config="true">
+        <var type="header_t" name="header"> </var>
+        <var type="int16_t" name = "accx"></var>
+        <var type="int16_t" name = "accy"></var>
+        <var type="int16_t" name = "accz"></var>
+        <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+
+    <struct name = "dsp_acc_input_pack_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+
+
+
+
+    <struct name = "dsp_data_output_pack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="bpm"> </var>
+       <var type="uint8_t" name="rpm"> </var>
+       <var type="uint8_t" name="bpm_pre"> </var>
+       <var type="uint8_t" name="status"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+    
+    <struct name = "dsp_data_output_pack_ack" encode = "true" config = "true">
+       <var type="header_t" name="header"> </var>
+       <var type="uint8_t" name="valid"> </var>
+       <var type = "uint32_t" name = "checksum" ></var>
+    </struct>
+
+</file>
