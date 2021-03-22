@@ -14,11 +14,15 @@ import string
 import resource
 import time
 
+from genc import genc
 
 class MyForm(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         loadUi("form.ui",self)
+        
+        
+        
         
         #self.struct = list() 
         self.structs = list()
