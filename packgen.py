@@ -16,6 +16,9 @@ import time
 
 from genc import genc
 
+from todict import parser_to_dict
+import xmltodict
+
 class MyForm(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -60,16 +63,57 @@ class MyForm(QMainWindow):
             if self.app_file_location:
                self.xml_tree = ET.parse(self.app_file_location)
                self.parse_xml()
+               
+               #print(self.app_file_location)
+               
+               xmlf = open(self.app_file_location,'r')
+               
+               ptd = parser_to_dict()
+               ptd.set_xml_txt(xmlf.read())
+               sturcture = ptd.get_structure()
+               print(sturcture)
+               #my_dict = xmltodict.parse(xmlf.read())
+               
+               
+               '''
+               for i in my_dict['file']["enum"]:
+                    print("---------")
+                    print(i["@name"])
+                    for j in i["var"]:
+                        print(j["@name"],j["@val"])
+
+               s = my_dict["file"]["union"]
+               print(s['@name'],s['@anonymous_type'])
+               for j in s['struct']['var']:
+                    print(j["@type"],j["@name"],j["@bit"])
+                    #print(i["@name"],i["@anonymous_type"])
+                    #for j in i:
+                # struct
+               for i in my_dict["file"]["struct"]:    
+                    print("------------")
+                    print(i["@name"], i["@encode"], i["@config"])
+                    for j in i["var"]:
+                        print(j["@type"], j["@name"])
+                               #ptd.set_xml_txt(xmlf.read())
+                               
+                               #print(data)
+               
+               '''
+               
                #QMessageBox.critical(self, 'Error', 'parse xml failed', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         except:
             QMessageBox.critical(self, 'Error', 'parse xml failed', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         
-        self.show_tree_view(self.structs)
+        
+        
+        
+        #self.show_tree_view(self.structs)
         #load tree widget
         
         
         
     def show_tree_view(self,data_list):
+        
         for i in self.structs:
             print(i)
             

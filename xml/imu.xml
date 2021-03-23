@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <file name="packet">
     <macro name = "pack">
         <var name = "PACK_LEN" val = "200" >  </var>
